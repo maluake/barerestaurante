@@ -1,0 +1,28 @@
+# Ambiente completo local/homologação: PostgreSQL + aplicação.
+# Uso: docker compose up --build   →   http://localhost:8000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: gastro
+      POSTGRES_USER: gastro
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gastro}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gastro"]
+      interval: 5s
+      retries: 10
+  web:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DATABASE_URL: postgres://gastro:${POSTGRES_PASSWORD:-gastro}@db:5432/gastro
+      SECRET_KEY: ${SECRET_KEY:-troque-esta-chave-em-producao}
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      CSRF_TRUSTED_ORIGINS: http://localhost:8000
+      SECURE_COOKIES: ${SECURE_COOKIES:-False}
+    ports: ["8000:8000"]
+volumes:
+  pgdata:
