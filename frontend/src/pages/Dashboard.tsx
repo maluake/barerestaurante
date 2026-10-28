@@ -37,9 +37,10 @@ function KpiCard({ k, big }: { k: Kpi; big?: boolean }) {
   const good = change === null ? null : COST_LIKE.has(k.key) ? change < 0 : change > 0;
   const value = k.format === "money" ? (big ? brl(k.value) : brlCompact(k.value)) : int(k.value);
   return (
-    <button onClick={() => k.link && nav(k.link)} className={clsx("card group flex w-full flex-col text-left transition-shadow hover:shadow-pop", big ? "p-5" : "p-4")}>
+    <div role="link" tabIndex={0} onClick={() => k.link && nav(k.link)} onKeyDown={(e) => e.key === "Enter" && k.link && nav(k.link)}
+      className={clsx("card group flex w-full cursor-pointer flex-col text-left transition-shadow hover:shadow-pop", big ? "p-5" : "p-4")}>
       <div className="flex items-center gap-1 text-xs font-medium text-stone-500">
-        <span className="truncate">{k.label}</span>
+        <span className="min-w-0 leading-tight">{k.label}</span>
         <span onClick={(e) => e.stopPropagation()}><InfoTip>{k.help}</InfoTip></span>
         <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
       </div>
@@ -59,7 +60,7 @@ function KpiCard({ k, big }: { k: Kpi; big?: boolean }) {
           )}
         </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -118,26 +119,26 @@ export default function Dashboard() {
           </div>
 
           <div className="grid gap-5 xl:grid-cols-3">
-            <Card className="xl:col-span-1 xl:row-span-2">
-              <CardHeader title="Atenção hoje" description={d.attention_total ? `${d.attention_total} alerta(s) em aberto, por prioridade` : undefined}
-                actions={<Link to="/alertas" className="link text-sm">Ver todos</Link>} />
-              {d.attention.length === 0 ? (
-                <EmptyState compact icon={<CheckCircle2 className="h-6 w-6 text-green-700" />} title="Tudo sob controle" description="Nenhum alerta prioritário no momento." />
-              ) : (
-                <div className="-my-2 divide-y divide-stone-100">{d.attention.map((a) => <AlertItem key={a.id} alert={a} compact />)}</div>
-              )}
-            </Card>
             <ChartCard className="xl:col-span-2" title="Vendas e CMV"
               help="Receita líquida das vendas concluídas e o custo real dos ingredientes consumidos (CMV) no mesmo período. A diferença é a margem de contribuição."
               actions={<Segmented value={grain} onChange={setGrain} items={[{ value: "day", label: "Dia" }, { value: "week", label: "Semana" }, { value: "month", label: "Mês" }]} />}
               empty={!salesData.some((r) => r.Líquido > 0)}
               table={{ columns: ["Período", "Líquido", "CMV"], rows: salesData.map((r) => [xFmt(r.period), brl(r.Líquido), brl(r.CMV)]) }}>
-              <TimeBars data={salesData} xKey="period" xFmt={xFmt} fmt={brl} axisFmt={brlCompact}
+              <TimeBars data={salesData} xKey="period" xFmt={xFmt} fmt={brl} axisFmt={brlCompact} height={300}
                 series={[{ key: "Líquido", name: "Receita líquida" }, { key: "CMV", name: "CMV" }]} />
             </ChartCard>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:col-span-2">
-              {secondary.map((k) => <KpiCard key={k.key} k={k} />)}
-            </div>
+            <Card className="flex max-h-[420px] flex-col">
+              <CardHeader title="Atenção hoje" description={d.attention_total ? `${d.attention_total} alerta(s) em aberto, por prioridade` : undefined}
+                actions={<Link to="/alertas" className="link text-sm">Ver todos</Link>} />
+              {d.attention.length === 0 ? (
+                <EmptyState compact icon={<CheckCircle2 className="h-6 w-6 text-green-700" />} title="Tudo sob controle" description="Nenhum alerta prioritário no momento." />
+              ) : (
+                <div className="-my-2 -mr-2 divide-y divide-stone-100 overflow-y-auto pr-2">{d.attention.map((a) => <AlertItem key={a.id} alert={a} compact />)}</div>
+              )}
+            </Card>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {secondary.map((k) => <KpiCard key={k.key} k={k} />)}
           </div>
 
           <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">

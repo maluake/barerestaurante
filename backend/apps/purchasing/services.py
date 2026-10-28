@@ -117,9 +117,12 @@ def compare_product(org, product, needed, today=None):
     stale_days = int(org.setting("stale_quote_days"))
     rows = [evaluate_quote(q, product, Decimal(needed), today, stale_days) for q in latest_quotes(org, product)]
     viable = sorted([r for r in rows if r["viable"] and not r.get("below_min_order")], key=lambda r: (r["total"], r["delivery_days"]))
-    others = sorted([r for r in rows if r not in viable], key=lambda r: (not r["viable"], r.get("total") or Decimal("1e12")))
-    ranked = viable + others
-    best = viable[0] if viable else None
+    below_min = sorted([r for r in rows if r["viable"] and r.get("below_min_order")], key=lambda r: (r["total"], r["delivery_days"]))
+    others = sorted([r for r in rows if not r["viable"]], key=lambda r: r.get("total") or Decimal("1e12"))
+    ranked = viable + below_min + others
+    best = viable[0] if viable else (below_min[0] if below_min else None)
+    if best is not None and best.get("below_min_order"):
+        best["issues"].append("Nenhum fornecedor atinge o pedido mínimo só com este item: combine com outros produtos.")
     for r in ranked:
         r["is_best"] = best is not None and r is best
         if best and r.get("total") is not None and r is not best:

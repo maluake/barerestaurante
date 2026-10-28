@@ -17,7 +17,7 @@ export function AlertItem({ alert, compact }: { alert: Alert; compact?: boolean 
   const { can } = useAuth();
   const resolve = useAction(() => api.post(`/alerts/${alert.id}/resolve/`, { note: "Resolvido pelo painel" }), { success: "Alerta marcado como resolvido." });
   return (
-    <div className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-start">
+    <div className={compact ? "flex flex-col gap-2 py-3" : "flex flex-col gap-3 py-3.5 sm:flex-row sm:items-start"}>
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex flex-wrap items-center gap-2">
           <PriorityBadge priority={alert.priority} />
@@ -35,7 +35,7 @@ export function AlertItem({ alert, compact }: { alert: Alert; compact?: boolean 
           {alert.action_path && <Button size="sm" variant="secondary" onClick={() => nav(alert.action_path)}>{alert.action_label || "Abrir"}</Button>}
           {can("alerts.manage") && (
             <Button size="sm" variant="ghost" icon={<Check className="h-4 w-4" />} loading={resolve.isPending} onClick={() => resolve.mutate(undefined)} aria-label="Marcar como resolvido">
-              <span className="sm:hidden lg:inline">Resolver</span>
+              Resolver
             </Button>
           )}
         </div>

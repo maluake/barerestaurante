@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { AlertTriangle, Clock, Maximize2, Minimize2, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { relativeMinutes, time } from "@/lib/format";
 import { Badge, Button, EmptyState, PageHeader } from "@/components/ui";
 import type { Order } from "@/components/domain/types";
@@ -36,7 +37,7 @@ function useBoard() {
   return { board, online, force, tick };
 }
 
-function Ticket({ o, slow }: { o: Order; slow: number }) {
+function Ticket({ o, slow, manager }: { o: Order; slow: number; manager: boolean }) {
   const minutes = Math.floor((Date.now() - new Date(o.created_at).getTime()) / 60000);
   const late = ["received", "confirmed", "preparing"].includes(o.status) && minutes > slow;
   const kitchenItems = o.items.filter((i) => i.requires_preparation);
@@ -64,13 +65,14 @@ function Ticket({ o, slow }: { o: Order; slow: number }) {
       </ul>
       {otherItems.length > 0 && <p className="mt-2 text-xs text-stone-500">Bar/balcão: {otherItems.map((i) => `${Number(i.quantity)}× ${i.name}`).join(", ")}</p>}
       {o.notes && <p className="mt-2 rounded-md bg-amber-50 px-2 py-1 text-sm text-amber-950">{o.notes}</p>}
-      <div className="mt-4"><OrderActions order={o} size="lg" kitchenOnly={o.status !== "received"} /></div>
+      <div className="mt-4"><OrderActions order={o} size="lg" kitchenOnly={!manager} /></div>
     </article>
   );
 }
 
 export default function Kitchen() {
   const { board, online, force } = useBoard();
+  const { can } = useAuth();
   const [full, setFull] = useState(false);
   const cols = board?.columns;
   const slow = board?.slow_order_minutes || 25;
@@ -79,7 +81,7 @@ export default function Kitchen() {
       <h2 className={clsx("mb-3 flex items-center justify-between rounded-lg px-3 py-2 text-sm font-bold", tone)}>
         {title}<span className="num rounded-full bg-white/70 px-2">{orders.length}</span>
       </h2>
-      <div className="space-y-3">{orders.map((o) => <Ticket key={o.id} o={o} slow={slow} />)}</div>
+      <div className="space-y-3">{orders.map((o) => <Ticket key={o.id} o={o} slow={slow} manager={can("orders.manage")} />)}</div>
     </section>
   );
   return (

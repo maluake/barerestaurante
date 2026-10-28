@@ -75,7 +75,7 @@ export default function Quotations() {
         </Toolbar>
         <DataTable<Q> rows={q.data?.results} loading={q.isLoading} error={q.error} dense columns={[
           { key: "product_name", header: "Produto", render: (r) => <span className="font-medium">{r.product_name}</span> },
-          { key: "supplier_name", header: "Fornecedor", render: (r) => <span>{r.supplier_name}{r.supplier_is_demo && <span className="ml-1 text-xs text-amber-700">(fictício)</span>}</span> },
+          { key: "supplier_name", header: "Fornecedor", render: (r) => <span>{r.supplier_name}{r.supplier_is_demo && !r.supplier_name.includes("fictíc") && <span className="ml-1 text-xs text-amber-700">(fictício)</span>}</span> },
           { key: "price", header: "Preço", align: "right", render: (r) => `${brl(r.price)}/${r.purchase_unit_code}` },
           { key: "conditions", header: "Condições", hideOnMobile: true, render: (r) => <span className="text-xs text-stone-600">mín. {Number(r.min_quantity)} {r.purchase_unit_code}{Number(r.discount_percent) ? ` · ${Number(r.discount_percent)}% desc.` : ""}{r.delivery_days !== null ? ` · ${r.delivery_days}d` : ""}{r.brand ? ` · ${r.brand}` : ""}</span> },
           { key: "quoted_at", header: "Consulta", render: (r) => <span className="inline-flex items-center gap-1.5">{date(r.quoted_at)}{r.is_stale && <Badge tone="warning">{r.age_days} dias</Badge>}</span> },

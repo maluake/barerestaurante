@@ -256,11 +256,11 @@ class Seeder:
                     unit = prod.unit
                     price = base.quantize(D("0.01"))
                     min_q = D("1") if prod.unit.code in ("kg", "L") else D("6")
-                quoted = self.today - timedelta(days=self.rng.choice([1, 2, 3, 5, 12, 20]))
+                quoted = self.today - timedelta(days=self.rng.choice([0, 1, 1, 2, 3, 4, 12]))
                 Quotation.objects.create(
                     organization=self.org, supplier=self.sup[key], product=prod, price=price, purchase_unit=unit,
                     min_quantity=min_q, freight=D("0"), discount_percent=D(self.rng.choice(["0", "0", "3", "5"])),
-                    valid_until=quoted + timedelta(days=self.rng.choice([2, 7, 15, 30])),
+                    valid_until=self.today + timedelta(days=self.rng.choice([1, 2, 7, 15, 30, 30])),
                     delivery_days=self.sup[key].delivery_days, payment_terms=self.sup[key].payment_terms,
                     quoted_at=quoted, notes="Cotação fictícia (demonstração)",
                     product_expiry=(self.today + timedelta(days=prod.shelf_life_days)) if prod.shelf_life_days else None,

@@ -5,6 +5,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { ToastProvider, Spinner } from "@/components/ui";
 import { AppShell } from "@/layout/AppShell";
+import { Guard } from "@/layout/Guard";
 import { ApiError } from "@/lib/api";
 
 const Login = lazy(() => import("@/pages/auth/Login"));
@@ -78,32 +79,32 @@ export default function App() {
                   <Route path="/cadastro" element={<Signup />} />
                   <Route element={<RequireAuth><AppShell /></RequireAuth>}>
                     <Route index element={<Home />} />
-                    <Route path="alertas" element={<Alerts />} />
-                    <Route path="assistente" element={<Assistant />} />
-                    <Route path="pedidos" element={<Orders />} />
-                    <Route path="pedidos/novo" element={<NewOrder />} />
-                    <Route path="cozinha" element={<Kitchen />} />
-                    <Route path="vendas" element={<Sales />} />
-                    <Route path="estoque/produtos" element={<Products />} />
-                    <Route path="estoque/produtos/:id" element={<ProductDetail />} />
-                    <Route path="estoque/validades" element={<Expiry />} />
-                    <Route path="estoque/movimentacoes" element={<Movements />} />
-                    <Route path="estoque/inventarios" element={<Inventory />} />
-                    <Route path="estoque/inventarios/:id" element={<InventoryDetail />} />
-                    <Route path="estoque/perdas" element={<Waste />} />
-                    <Route path="estoque/transferencias" element={<Transfers />} />
-                    <Route path="cardapio" element={<MenuList />} />
-                    <Route path="cardapio/:id" element={<MenuItemPage />} />
-                    <Route path="compras/lista" element={<ShoppingList />} />
-                    <Route path="compras/pedidos" element={<PurchaseOrders />} />
-                    <Route path="compras/pedidos/:id" element={<PurchaseOrderDetail />} />
-                    <Route path="compras/fornecedores" element={<Suppliers />} />
-                    <Route path="compras/fornecedores/:id" element={<SupplierDetail />} />
-                    <Route path="compras/cotacoes" element={<Quotations />} />
-                    <Route path="compras/comparador" element={<Compare />} />
-                    <Route path="compras/oportunidades" element={<Opportunities />} />
-                    <Route path="financeiro" element={<Finance />} />
-                    <Route path="relatorios" element={<Reports />} />
+                    <Route path="alertas" element={<Guard perms={["alerts.view"]}><Alerts /></Guard>} />
+                    <Route path="assistente" element={<Guard perms={["assistant.use"]}><Assistant /></Guard>} />
+                    <Route path="pedidos" element={<Guard perms={["orders.view"]}><Orders /></Guard>} />
+                    <Route path="pedidos/novo" element={<Guard perms={["orders.manage"]}><NewOrder /></Guard>} />
+                    <Route path="cozinha" element={<Guard perms={["kitchen.update", "orders.view"]}><Kitchen /></Guard>} />
+                    <Route path="vendas" element={<Guard perms={["sales.view"]}><Sales /></Guard>} />
+                    <Route path="estoque/produtos" element={<Guard perms={["products.view"]}><Products /></Guard>} />
+                    <Route path="estoque/produtos/:id" element={<Guard perms={["products.view"]}><ProductDetail /></Guard>} />
+                    <Route path="estoque/validades" element={<Guard perms={["stock.view"]}><Expiry /></Guard>} />
+                    <Route path="estoque/movimentacoes" element={<Guard perms={["stock.view"]}><Movements /></Guard>} />
+                    <Route path="estoque/inventarios" element={<Guard perms={["stock.view"]}><Inventory /></Guard>} />
+                    <Route path="estoque/inventarios/:id" element={<Guard perms={["stock.view"]}><InventoryDetail /></Guard>} />
+                    <Route path="estoque/perdas" element={<Guard perms={["waste.manage", "stock.view"]}><Waste /></Guard>} />
+                    <Route path="estoque/transferencias" element={<Guard perms={["stock.transfer"]}><Transfers /></Guard>} />
+                    <Route path="cardapio" element={<Guard perms={["recipes.view", "orders.view"]}><MenuList /></Guard>} />
+                    <Route path="cardapio/:id" element={<Guard perms={["recipes.view"]}><MenuItemPage /></Guard>} />
+                    <Route path="compras/lista" element={<Guard perms={["purchases.view"]}><ShoppingList /></Guard>} />
+                    <Route path="compras/pedidos" element={<Guard perms={["purchases.view"]}><PurchaseOrders /></Guard>} />
+                    <Route path="compras/pedidos/:id" element={<Guard perms={["purchases.view"]}><PurchaseOrderDetail /></Guard>} />
+                    <Route path="compras/fornecedores" element={<Guard perms={["suppliers.view"]}><Suppliers /></Guard>} />
+                    <Route path="compras/fornecedores/:id" element={<Guard perms={["suppliers.view"]}><SupplierDetail /></Guard>} />
+                    <Route path="compras/cotacoes" element={<Guard perms={["suppliers.view"]}><Quotations /></Guard>} />
+                    <Route path="compras/comparador" element={<Guard perms={["suppliers.view"]}><Compare /></Guard>} />
+                    <Route path="compras/oportunidades" element={<Guard perms={["suppliers.view"]}><Opportunities /></Guard>} />
+                    <Route path="financeiro" element={<Guard perms={["finance.view"]}><Finance /></Guard>} />
+                    <Route path="relatorios" element={<Guard perms={["reports.view", "reports.finance"]}><Reports /></Guard>} />
                     <Route path="configuracoes" element={<Settings />} />
                     <Route path="configuracoes/:tab" element={<Settings />} />
                     <Route path="*" element={<Navigate to="/" replace />} />

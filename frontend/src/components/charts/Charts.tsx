@@ -81,7 +81,7 @@ export function TimeBars({ data, xKey, series, fmt, axisFmt, xFmt, height = 240 
         <BarChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }} barGap={2}>
           <CartesianGrid vertical={false} stroke={GRID} />
           <XAxis dataKey={xKey} tickFormatter={xFmt} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={{ stroke: GRID }} minTickGap={12} />
-          <YAxis tickFormatter={axisFmt || fmt} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={false} width={64} />
+          <YAxis tickFormatter={axisFmt || fmt} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={false} width={84} />
           <Tooltip cursor={{ fill: "rgba(120,113,108,0.08)" }} content={<TooltipBox fmt={fmt} labelFmt={xFmt} />} />
           {series.length > 1 && <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "#44403c" }} />}
           {series.map((s, i) => (
@@ -102,7 +102,7 @@ export function TimeLines({ data, xKey, series, fmt, axisFmt, xFmt, height = 240
         <LineChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid vertical={false} stroke={GRID} />
           <XAxis dataKey={xKey} tickFormatter={xFmt} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={{ stroke: GRID }} minTickGap={16} />
-          <YAxis tickFormatter={axisFmt || fmt} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={false} width={64} domain={["auto", "auto"]} />
+          <YAxis tickFormatter={axisFmt || fmt} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={false} width={84} domain={["auto", "auto"]} />
           <Tooltip cursor={{ stroke: "#a8a29e", strokeDasharray: "3 3" }} content={<TooltipBox fmt={fmt} labelFmt={xFmt} />} />
           {series.length > 1 && <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "#44403c" }} />}
           {series.map((s, i) => (

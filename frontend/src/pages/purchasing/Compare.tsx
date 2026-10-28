@@ -102,18 +102,18 @@ export default function Compare() {
               {p.quotes.map((q) => (
                 <div key={q.quotation_id} className={clsx("rounded-xl p-4 ring-1", q.is_best ? "bg-pine-50 ring-2 ring-pine-600" : q.viable ? "ring-stone-200" : "bg-stone-50 ring-stone-200 opacity-80")}>
                   <div className="flex items-start justify-between gap-2">
-                    <div className="font-semibold">{q.supplier_name}{q.supplier_is_demo && <span className="ml-1 text-xs font-normal text-amber-700">(fictício)</span>}</div>
+                    <div className="font-semibold">{q.supplier_name}</div>
                     {q.is_best ? <Badge tone="pine" icon={<Award className="h-3 w-3" />}>Menor custo total</Badge> : !q.viable ? <Badge tone="critical">Inviável</Badge> : null}
                   </div>
-                  <div className="num mt-2 text-2xl font-bold">{q.total ? brl(q.total) : "—"}</div>
+                  <div className="num mt-2 text-2xl font-bold">{q.total !== undefined ? brl(q.total) : "—"}</div>
                   {q.difference_vs_best && <div className="text-xs text-red-700">+{brl(q.difference_vs_best)} vs. melhor</div>}
                   <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-stone-600">
                     <dt>Preço anunciado</dt><dd className="num text-right">{brl(q.price)}/{q.purchase_unit}</dd>
-                    {q.price_per_stock_unit && <><dt>Por {p.unit}</dt><dd className="num text-right">{brl(q.price_per_stock_unit)}</dd></>}
-                    {q.units_to_buy && <><dt>Comprar</dt><dd className="num text-right">{num(q.units_to_buy)} {q.purchase_unit}</dd></>}
-                    {q.surplus && Number(q.surplus) > 0 && <><dt>Excedente</dt><dd className="num text-right">{qty(q.surplus, p.unit)}</dd></>}
-                    {q.subtotal && <><dt>Subtotal</dt><dd className="num text-right">{brl(q.subtotal)}</dd></>}
-                    {q.discount && Number(q.discount) > 0 && <><dt>Desconto</dt><dd className="num text-right">−{brl(q.discount)}</dd></>}
+                    {q.price_per_stock_unit !== undefined && <><dt>Por {p.unit}</dt><dd className="num text-right">{brl(q.price_per_stock_unit)}</dd></>}
+                    {q.units_to_buy !== undefined && <><dt>Comprar</dt><dd className="num text-right">{num(q.units_to_buy)} {q.purchase_unit}</dd></>}
+                    {Number(q.surplus ?? 0) > 0 && <><dt>Excedente</dt><dd className="num text-right">{qty(q.surplus, p.unit)}</dd></>}
+                    {q.subtotal !== undefined && <><dt>Subtotal</dt><dd className="num text-right">{brl(q.subtotal)}</dd></>}
+                    {Number(q.discount ?? 0) > 0 && <><dt>Desconto</dt><dd className="num text-right">−{brl(q.discount)}</dd></>}
                     {q.freight !== undefined && <><dt>Frete</dt><dd className="num text-right">{brl(q.freight)}</dd></>}
                     {q.delivery_days !== undefined && <><dt>Entrega</dt><dd className="text-right">{q.delivery_days} dia(s) · {date(q.expected_delivery)}</dd></>}
                     <dt>Pagamento</dt><dd className="text-right">{q.payment_terms || "—"}</dd>
