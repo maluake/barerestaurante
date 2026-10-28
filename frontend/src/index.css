@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; }
+  body { @apply bg-stone-50 text-stone-900 font-sans; font-feature-settings: "cv11", "ss01"; }
+  :focus-visible { @apply outline-none ring-2 ring-pine-500 ring-offset-1; }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+}
+
+@layer components {
+  .num { font-variant-numeric: tabular-nums; }
+  .label { @apply text-xs font-semibold uppercase tracking-wide text-stone-500; }
+  .input {
+    @apply block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400
+      focus:border-pine-500 focus:outline-none focus:ring-2 focus:ring-pine-500/20 disabled:bg-stone-100 disabled:text-stone-500;
+  }
+  .card { @apply rounded-xl bg-white shadow-card; }
+  .link { @apply font-medium text-pine-700 hover:text-pine-900 hover:underline underline-offset-2; }
+}
