@@ -97,7 +97,9 @@ class Command(BaseCommand):
         if Organization.objects.filter(is_demo=True).exists():
             self.stdout.write("A demonstração já existe. Use --reset para recriar.")
             return
-        Seeder(self.stdout, opts["days"]).run()
+        # Tudo ou nada: se o processo for interrompido, nenhuma demonstração parcial fica no banco.
+        with transaction.atomic():
+            Seeder(self.stdout, opts["days"]).run()
 
 
 class Seeder:

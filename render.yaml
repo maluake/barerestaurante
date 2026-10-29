@@ -1,0 +1,36 @@
+# Publicação no Render (https://render.com) com um clique: botão "Deploy to Render" no README.
+# Cria um banco PostgreSQL gratuito e o site com link público (https://<nome>.onrender.com).
+databases:
+  - name: mise-db
+    plan: free
+    databaseName: mise
+    user: mise
+
+services:
+  - type: web
+    name: mise
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health/
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mise-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      # Demonstração: aceita o domínio gerado pelo Render; a proteção CSRF continua restrita abaixo.
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com
+      - key: SECURE_COOKIES
+        value: "True"
+      - key: WEB_CONCURRENCY
+        value: "2"
+      # Cria os dados fictícios de demonstração na primeira inicialização (não recria se já existirem).
+      - key: DEMO_DATA
+        value: "true"

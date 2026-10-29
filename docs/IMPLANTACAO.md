@@ -1,5 +1,12 @@
 # Implantação, operação, backup e LGPD
 
+## Publicação com um clique (Render)
+
+O arquivo `render.yaml` descreve o site (contêiner Docker) e um PostgreSQL gratuito. O botão “Deploy to Render”
+do README cria tudo e gera um link público. A inicialização (`deploy/start.sh`) aplica as migrations e, com
+`DEMO_DATA=true`, cria os dados de demonstração em segundo plano (somente se ainda não existirem). A criação é
+atômica: se for interrompida, nada fica pela metade e ela é refeita no próximo boot.
+
 ## Imagem e execução
 
 O `Dockerfile` (raiz) compila o frontend e gera uma imagem Python que serve a API (`/api/`), o admin

@@ -1,20 +1,33 @@
 # Mise — Gestão inteligente para bares e restaurantes
 
+[![Publicar no Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/maluake/barerestaurante)
+
+## Colocar o site no ar (link público, sem instalar nada)
+
+1. Clique no botão **Deploy to Render** acima e entre com sua conta do GitHub (o cadastro no Render é gratuito).
+2. Confirme em **Deploy Blueprint** / **Apply**. O Render cria sozinho o banco de dados e o site, usando o
+   arquivo `render.yaml` deste repositório. Não é preciso preencher nada.
+3. Aguarde a primeira publicação (cerca de 10 minutos). Depois, abra o serviço **mise** no painel do Render:
+   o link fica no topo, no formato `https://mise-xxxx.onrender.com`. Esse link pode ser aberto em qualquer
+   computador ou celular e compartilhado.
+4. Entre com usuário **`demo.dono`** e senha **`Demo@2026`** (ou `demo.gerente`, `demo.estoque`,
+   `demo.atendente`, `demo.cozinha`). Na primeira abertura, os dados de demonstração levam de 2 a 4 minutos para
+   aparecer; se o login recusar no início, espere um pouco e tente de novo.
+
+Sobre o plano gratuito do Render:
+- O site “dorme” após 15 minutos sem acesso; a próxima visita demora cerca de 1 minuto para carregar.
+- O banco gratuito vale por 30 dias; depois é preciso migrar para um plano pago ou recriar o banco.
+- Todos os dados desse ambiente são fictícios. Para uso real, troque `DEMO_DATA` para `false` no painel do Render.
+
+Toda vez que um novo commit chega à branch principal do repositório, o Render atualiza o site automaticamente.
+
+### Alternativa: abrir pelo GitHub Codespaces
+
 [![Abrir no GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/maluake/barerestaurante?quickstart=1)
 
-## Testar agora, sem instalar nada
-
-1. Clique no botão **Open in GitHub Codespaces** acima (é preciso estar logado no GitHub).
-2. Clique em **Create codespace** e aguarde. Na primeira vez leva de 5 a 8 minutos: o ambiente instala tudo,
-   cria o banco e gera os dados de demonstração sozinho.
-3. Quando terminar, a aplicação abre numa nova aba (porta 8000). Se não abrir, vá na aba **Portas / Ports**
-   do Codespace e clique no ícone de globo da porta **8000**.
-4. Entre com usuário **`demo.dono`** e senha **`Demo@2026`** (ou `demo.gerente`, `demo.estoque`,
-   `demo.atendente`, `demo.cozinha` para ver cada perfil).
-
-Para voltar depois: em github.com/codespaces, abra o mesmo Codespace — os dados ficam salvos e a aplicação
-sobe sozinha. Lembre de **parar ou excluir** o Codespace quando não estiver usando, para não gastar a cota
-gratuita mensal do GitHub. Todos os dados desse ambiente são fictícios.
+Cria um ambiente temporário no navegador (5 a 8 minutos na primeira vez) e abre a aplicação na porta 8000,
+com os mesmos usuários de demonstração. O link só funciona enquanto o Codespace estiver ligado. Pare ou exclua
+o Codespace quando não estiver usando, para não gastar a cota gratuita do GitHub.
 
 ---
 

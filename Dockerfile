@@ -14,8 +14,9 @@ COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ ./
 COPY --from=frontend /app/frontend/dist /app/frontend/dist
+COPY deploy/start.sh /app/start.sh
 RUN SECRET_KEY=build-only python manage.py collectstatic --noinput
 RUN useradd --create-home mise && chown -R mise /app
 USER mise
 EXPOSE 8000
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers ${WEB_CONCURRENCY:-3} --access-logfile -"]
+CMD ["sh", "/app/start.sh"]
