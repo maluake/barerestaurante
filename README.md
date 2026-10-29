@@ -44,6 +44,7 @@ registros operacionais em recomendações práticas.
 
 Documentação complementar:
 
+- [`docs/MANUAL_DO_USUARIO.md`](docs/MANUAL_DO_USUARIO.md) — **manual para o cliente**, simples e por cargo
 - [`docs/GUIA.md`](docs/GUIA.md) — guia de funcionalidades, perfis, relatório das fases, integrações pendentes e roadmap
 - [`docs/REGRAS_DE_NEGOCIO.md`](docs/REGRAS_DE_NEGOCIO.md) — definições, fórmulas e regras (FEFO, baixa, custeio, finanças, compras, alertas)
 - [`docs/IMPLANTACAO.md`](docs/IMPLANTACAO.md) — produção, variáveis de ambiente, rotinas agendadas, backup/recuperação e LGPD
