@@ -1,5 +1,23 @@
 # Mise — Gestão inteligente para bares e restaurantes
 
+[![Abrir no GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/maluake/barerestaurante?quickstart=1)
+
+## Testar agora, sem instalar nada
+
+1. Clique no botão **Open in GitHub Codespaces** acima (é preciso estar logado no GitHub).
+2. Clique em **Create codespace** e aguarde. Na primeira vez leva de 5 a 8 minutos: o ambiente instala tudo,
+   cria o banco e gera os dados de demonstração sozinho.
+3. Quando terminar, a aplicação abre numa nova aba (porta 8000). Se não abrir, vá na aba **Portas / Ports**
+   do Codespace e clique no ícone de globo da porta **8000**.
+4. Entre com usuário **`demo.dono`** e senha **`Demo@2026`** (ou `demo.gerente`, `demo.estoque`,
+   `demo.atendente`, `demo.cozinha` para ver cada perfil).
+
+Para voltar depois: em github.com/codespaces, abra o mesmo Codespace — os dados ficam salvos e a aplicação
+sobe sozinha. Lembre de **parar ou excluir** o Codespace quando não estiver usando, para não gastar a cota
+gratuita mensal do GitHub. Todos os dados desse ambiente são fictícios.
+
+---
+
 Plataforma web (SaaS, multi-tenant) para controlar estoque por lote e validade, fichas técnicas e custos,
 pedidos e cozinha, vendas, compras e fornecedores, finanças, alertas e um assistente que transforma os
 registros operacionais em recomendações práticas.
