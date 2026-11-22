@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { api, type Page } from "./api";
 import { useAuth } from "./auth";
-import { useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/useToast";
 
 export function useDebounced<T>(value: T, ms = 300) {
   const [v, setV] = useState(value);

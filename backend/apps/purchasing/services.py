@@ -166,35 +166,48 @@ def compare_list(org, items, today=None):
     single.sort(key=lambda s: (-s["covers"], s["total"]))
 
     # Divisão: cada produto no fornecedor mais barato (sem frete), depois consolida se o frete economizado compensar.
+    # Empates de preço são resolvidos pelo id do fornecedor, para o resultado não depender da ordem das cotações.
+    def cheapest(quotes):
+        return min(quotes, key=lambda r: (goods(r), r["supplier_id"]))["supplier_id"]
+
     assignment = {}
     for pid, p in per_product.items():
         if p["quotes"]:
-            assignment[pid] = min(p["quotes"].values(), key=goods)["supplier_id"]
+            assignment[pid] = cheapest(p["quotes"].values())
 
     def split_total(assign):
         used = set(assign.values())
         return sum((goods(per_product[pid]["quotes"][sid]) for pid, sid in assign.items()), ZERO) + sum(
             (suppliers[s].delivery_fee for s in used), ZERO)
 
-    improved = True
-    while improved:
-        improved = False
+    def without(assign, s):
+        """Move os itens do fornecedor s para os outros fornecedores já usados; None se algum item não tiver alternativa."""
+        used = set(assign.values())
+        moved = dict(assign)
+        for pid, sid in assign.items():
+            if sid != s:
+                continue
+            alternatives = [r for k, r in per_product[pid]["quotes"].items() if k != s and k in used]
+            if not alternatives:
+                return None
+            moved[pid] = cheapest(alternatives)
+        return moved
+
+    # A cada rodada, avalia todas as consolidações possíveis e aplica a de menor total (não a primeira que melhora).
+    # Cada rodada remove um fornecedor e só continua se o total cair, então o laço sempre termina.
+    while True:
         current = split_total(assignment)
-        for s in set(assignment.values()):
-            moved = dict(assignment)
-            ok = True
-            for pid, sid in assignment.items():
-                if sid != s:
-                    continue
-                alternatives = [r for k, r in per_product[pid]["quotes"].items() if k != s and k in set(assignment.values())]
-                if not alternatives:
-                    ok = False
-                    break
-                moved[pid] = min(alternatives, key=goods)["supplier_id"]
-            if ok and split_total(moved) < current:
-                assignment = moved
-                improved = True
-                break
+        candidates = []
+        for s in sorted(set(assignment.values())):
+            moved = without(assignment, s)
+            if moved is not None:
+                candidates.append((split_total(moved), s, moved))
+        if not candidates:
+            break
+        best_total, _, best = min(candidates, key=lambda c: (c[0], c[1]))
+        if best_total >= current:
+            break
+        assignment = best
 
     split = defaultdict(lambda: {"items": [], "goods_total": ZERO})
     for pid, sid in assignment.items():

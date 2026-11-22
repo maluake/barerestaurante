@@ -6,7 +6,8 @@ import { useApi } from "@/lib/hooks";
 import { useAuth } from "@/lib/auth";
 import { brl, brlCompact, dateShort, int, num, toNum } from "@/lib/format";
 import { Card, CardHeader, EmptyState, ErrorState, InfoTip, PageHeader, Segmented, Skeleton } from "@/components/ui";
-import { ChartCard, RankBars, TimeBars, TimeLines, CategoryBars, SERIES } from "@/components/charts/Charts";
+import { ChartCard, RankBars, TimeBars, TimeLines, CategoryBars } from "@/components/charts/Charts";
+import { SERIES } from "@/components/charts/palette";
 import { AlertItem, type Alert } from "@/components/domain/AlertItem";
 
 type Kpi = { key: string; label: string; value: string | number; format: "money" | "int"; previous: string | number | null;

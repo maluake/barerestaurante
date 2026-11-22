@@ -6,6 +6,7 @@ export * from "./Modal";
 export * from "./States";
 export * from "./PageHeader";
 export * from "./Toast";
+export * from "./useToast";
 export * from "./InfoTip";
 export * from "./Tabs";
 export * from "./DataTable";

@@ -4,9 +4,8 @@ import { BarChart3, Table2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { InfoTip } from "@/components/ui/InfoTip";
 import { EmptyState } from "@/components/ui/States";
+import { SERIES } from "./palette";
 
-/** Paleta categórica validada (CVD) — atribuída em ordem fixa, nunca reciclada. */
-export const SERIES = ["#2a78d6", "#eb6834", "#1baf7a"];
 const GRID = "#e7e5e4";
 const AXIS = "#78716c";
 

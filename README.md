@@ -1,39 +1,35 @@
 # Mise — Gestão inteligente para bares e restaurantes
 
-[![Publicar no Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/maluake/barerestaurante)
+Sistema web para a operação de bares e restaurantes: **estoque por lote e validade, fichas técnicas e custos, pedidos e cozinha, vendas, compras e fornecedores, finanças e alertas**, além de um assistente que transforma os registros do dia a dia em recomendações práticas.
 
-## Colocar o site no ar (link público, sem instalar nada)
+<p>
+  <img src="docs/img/painel.png" alt="Visão geral com faturamento do dia, ticket médio, gráfico de vendas e CMV e alertas por prioridade" width="760">
+</p>
 
-1. Clique no botão **Deploy to Render** acima e entre com sua conta do GitHub (o cadastro no Render é gratuito).
-2. Confirme em **Deploy Blueprint** / **Apply**. O Render cria sozinho o banco de dados e o site, usando o
-   arquivo `render.yaml` deste repositório. Não é preciso preencher nada.
-3. Aguarde a primeira publicação (cerca de 10 minutos). Depois, abra o serviço **mise** no painel do Render:
-   o link fica no topo, no formato `https://mise-xxxx.onrender.com`. Esse link pode ser aberto em qualquer
-   computador ou celular e compartilhado.
-4. Entre com usuário **`demo.dono`** e senha **`Demo@2026`** (ou `demo.gerente`, `demo.estoque`,
-   `demo.atendente`, `demo.cozinha`). Na primeira abertura, os dados de demonstração levam de 2 a 4 minutos para
-   aparecer; se o login recusar no início, espere um pouco e tente de novo.
+> Imagens geradas localmente com o **ambiente de demonstração** (`seed_demo`): o estabelecimento, os fornecedores e os preços são fictícios.
 
-Sobre o plano gratuito do Render:
-- O site “dorme” após 15 minutos sem acesso; a próxima visita demora cerca de 1 minuto para carregar.
-- O banco gratuito vale por 30 dias; depois é preciso migrar para um plano pago ou recriar o banco.
-- Todos os dados desse ambiente são fictícios. Para uso real, troque `DEMO_DATA` para `false` no painel do Render.
+## O problema
 
-Toda vez que um novo commit chega à branch principal do repositório, o Render atualiza o site automaticamente.
+Em bares e restaurantes pequenos, estoque, compras e custos costumam viver em cadernos e planilhas soltas. Produtos vencem sem ninguém perceber, o custo real de cada prato é desconhecido e a compra é feita pelo menor preço anunciado, não pelo menor custo total (frete, embalagem mínima, desconto).
 
-### Alternativa: abrir pelo GitHub Codespaces
+## O que o sistema faz
 
-[![Abrir no GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/maluake/barerestaurante?quickstart=1)
+| Módulo | Principais recursos |
+|---|---|
+| **Estoque** | Produtos com unidades de medida e conversões, lotes com validade (saída por FEFO), movimentações imutáveis, inventário com divergências, perdas e transferências entre unidades |
+| **Cardápio** | Fichas técnicas com custo calculado a partir dos lotes e recálculo quando o custo muda |
+| **Pedidos e cozinha** | Pedidos com baixa automática de estoque, painel da cozinha com atualização automática, cancelamentos antes e durante o preparo |
+| **Vendas** | Registro de vendas e importação de CSV do PDV sem duplicidade |
+| **Compras** | Fornecedores, cotações, **comparador de custo total**, lista inteligente de compras, pedidos com aprovação e recebimento parcial |
+| **Financeiro** | Contas a pagar e receber, caixa, resultado e fluxo de caixa |
+| **Alertas e assistente** | Alertas por prioridade (lote vencido, entrega atrasada, estoque baixo…) e um assistente por regras que sugere ações |
+| **Acesso** | Vários estabelecimentos isolados entre si (multi-tenant), várias unidades e 5 perfis de acesso: proprietário, gerente, estoque, atendimento e cozinha |
 
-Cria um ambiente temporário no navegador (5 a 8 minutos na primeira vez) e abre a aplicação na porta 8000,
-com os mesmos usuários de demonstração. O link só funciona enquanto o Codespace estiver ligado. Pare ou exclua
-o Codespace quando não estiver usando, para não gastar a cota gratuita do GitHub.
+| Comparador de fornecedores |
+|---|
+| <img src="docs/img/comparador.png" alt="Comparador mostrando que dividir a compra entre dois fornecedores sai mais barato que comprar tudo em um" width="760"> |
 
----
-
-Plataforma web (SaaS, multi-tenant) para controlar estoque por lote e validade, fichas técnicas e custos,
-pedidos e cozinha, vendas, compras e fornecedores, finanças, alertas e um assistente que transforma os
-registros operacionais em recomendações práticas.
+## Tecnologias
 
 | Camada | Tecnologia |
 |---|---|
@@ -136,7 +132,7 @@ Para começar sem demonstração, use “Cadastre seu estabelecimento” na tela
 
 ```bash
 cd backend
-.venv/bin/pytest                  # 56 testes (requer PostgreSQL; cria o banco de teste)
+.venv/bin/pytest                  # 58 testes (requer PostgreSQL; cria o banco de teste)
 .venv/bin/ruff check .            # lint
 cd ../frontend
 npx tsc -p tsconfig.app.json --noEmit && npm run lint && npm run build
@@ -150,3 +146,45 @@ permissões por perfil, CSRF, isolamento entre estabelecimentos, auditoria, cál
 alertas (deduplicação, auto-resolução, adiamento), dashboard e assistente — além do **fluxo de aceitação
 completo** (cadastro do estabelecimento → fornecedor → produto → cotação → pedido → recebimento com lotes →
 ficha técnica → venda → baixa → movimentações → alertas → lista de compras → comparador → relatórios).
+
+## Colocar no ar
+
+### Publicar no Render (link público, sem instalar nada)
+
+[![Publicar no Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/maluake/mise-gestao-restaurantes)
+
+1. Clique no botão **Deploy to Render** acima e entre com sua conta do GitHub (o cadastro no Render é gratuito).
+2. Confirme em **Deploy Blueprint** / **Apply**. O Render cria sozinho o banco de dados e o site, usando o
+   arquivo `render.yaml` deste repositório. Não é preciso preencher nada.
+3. Aguarde a primeira publicação (cerca de 10 minutos). Depois, abra o serviço **mise** no painel do Render:
+   o link fica no topo, no formato `https://mise-xxxx.onrender.com`. Esse link pode ser aberto em qualquer
+   computador ou celular e compartilhado.
+4. Entre com usuário **`demo.dono`** e senha **`Demo@2026`** (ou `demo.gerente`, `demo.estoque`,
+   `demo.atendente`, `demo.cozinha`). Na primeira abertura, os dados de demonstração levam de 2 a 4 minutos para
+   aparecer; se o login recusar no início, espere um pouco e tente de novo.
+
+Sobre o plano gratuito do Render:
+- O site “dorme” após 15 minutos sem acesso; a próxima visita demora cerca de 1 minuto para carregar.
+- O banco gratuito vale por 30 dias; depois é preciso migrar para um plano pago ou recriar o banco.
+- Todos os dados desse ambiente são fictícios. Para uso real, troque `DEMO_DATA` para `false` no painel do Render.
+
+Toda vez que um novo commit chega à branch principal do repositório, o Render atualiza o site automaticamente.
+
+### Alternativa: abrir pelo GitHub Codespaces
+
+[![Abrir no GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/maluake/mise-gestao-restaurantes?quickstart=1)
+
+Cria um ambiente temporário no navegador (5 a 8 minutos na primeira vez) e abre a aplicação na porta 8000,
+com os mesmos usuários de demonstração. O link só funciona enquanto o Codespace estiver ligado. Pare ou exclua
+o Codespace quando não estiver usando, para não gastar a cota gratuita do GitHub.
+
+## Limitações e próximos passos
+
+- O **assistente funciona por regras**; a integração com um modelo de IA está preparada, mas não implementada.
+- Integrações com PDV por API, fornecedores, WhatsApp e cobrança de assinaturas estão **pendentes** (detalhes em [`docs/GUIA.md`](docs/GUIA.md#integrações-externas-pendentes)).
+- O painel da cozinha atualiza por consulta periódica, não em tempo real (WebSockets está no roadmap).
+- No plano gratuito do Render, o banco expira em 30 dias e o site "dorme" após 15 minutos sem acesso.
+
+## Como este projeto foi feito
+
+Este projeto foi desenvolvido com o **Claude (IA da Anthropic)** como ferramenta de programação: todos os commits do histórico têm o Claude como autor.

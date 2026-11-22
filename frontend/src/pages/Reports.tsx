@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Download, Printer } from "lucide-react";
 import { downloadFile } from "@/lib/api";
 import { useApi, useOptions } from "@/lib/hooks";
-import { useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/useToast";
 import { brl, date, dateTime, monthStartISO, num, pct, todayISO } from "@/lib/format";
 import { Button, Card, EmptyState, ErrorState, Input, PageHeader, Select, Spinner } from "@/components/ui";
 

@@ -1,0 +1,66 @@
+# Verificações a cada push e pull request. Não publica nada: o deploy continua pelo Render.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (pytest + ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: gastro
+          POSTGRES_PASSWORD: somente-ci
+          POSTGRES_DB: gastro
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U gastro" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DATABASE_URL: postgres://gastro:somente-ci@127.0.0.1:5432/gastro
+      SECRET_KEY: somente-ci
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Nenhuma migração pendente
+        run: python manage.py makemigrations --check --dry-run
+      - name: Testes
+        run: pytest --create-db
+
+  frontend:
+    name: Frontend (lint + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Lint (sem avisos)
+        run: npx eslint . --max-warnings 0
+      - name: Tipos e build
+        run: npm run build
