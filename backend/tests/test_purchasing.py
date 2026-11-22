@@ -63,6 +63,39 @@ def test_compare_list_counts_freight_once(tenant, product_factory):
     assert res["best_split"]["total"] == D("50.20")  # 10,20 + 10,00 + 30 de frete
 
 
+def test_compare_list_result_does_not_depend_on_supplier_creation_order(tenant, product_factory):
+    # Mesmo cenário do teste acima, com os fornecedores criados na ordem inversa.
+    # Antes da correção, a consolidação aceitava a primeira melhoria encontrada e
+    # escolhia S1 (R$ 50,50) quando S2 era tentado primeiro.
+    p1, p2 = product_factory("A"), product_factory("B")
+    s2 = Supplier.objects.create(organization=tenant["org"], name="S2", delivery_fee=D("30"))
+    s1 = Supplier.objects.create(organization=tenant["org"], name="S1", delivery_fee=D("30"))
+    quote(tenant, s1, p1, "10.00")
+    quote(tenant, s1, p2, "10.50")
+    quote(tenant, s2, p1, "10.20")
+    quote(tenant, s2, p2, "10.00")
+    res = services.compare_list(tenant["org"], [(p1, D("1")), (p2, D("1"))])
+    assert [s["supplier_name"] for s in res["best_split"]["suppliers"]] == ["S2"]
+    assert res["best_split"]["total"] == D("50.20")
+
+
+def test_compare_list_picks_the_best_consolidation_not_the_first(tenant, product_factory):
+    # Três fornecedores: consolidar no primeiro candidato que melhora o total
+    # terminava em Z (R$ 56); a melhor consolidação é tudo em Y (R$ 45).
+    a, b, c = product_factory("A"), product_factory("B"), product_factory("C")
+    x = Supplier.objects.create(organization=tenant["org"], name="X", delivery_fee=D("30"))
+    y = Supplier.objects.create(organization=tenant["org"], name="Y", delivery_fee=D("10"))
+    z = Supplier.objects.create(organization=tenant["org"], name="Z", delivery_fee=D("20"))
+    precos = {a: ("20", "16", "10"), b: ("11", "10", "16"), c: ("8", "9", "10")}
+    for produto, (px, py, pz) in precos.items():
+        quote(tenant, x, produto, px)
+        quote(tenant, y, produto, py)
+        quote(tenant, z, produto, pz)
+    res = services.compare_list(tenant["org"], [(a, D("1")), (b, D("1")), (c, D("1"))])
+    assert [s["supplier_name"] for s in res["best_split"]["suppliers"]] == ["Y"]
+    assert res["best_split"]["total"] == D("45.00")  # 16 + 10 + 9 + 10 de frete
+
+
 def _po(tenant, supplier, product, qty="10", price="5.00", unit=None):
     return services.create_purchase_order(tenant["org"], tenant["unit"], supplier, [
         {"product": product, "purchase_unit": unit or product.unit, "quantity": D(qty), "unit_price": D(price)}],
