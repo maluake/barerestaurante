@@ -1,9 +1,9 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import clsx from "clsx";
 import { AlertCircle, CheckCircle2, X } from "lucide-react";
+import { ToastContext } from "./useToast";
 
 type ToastItem = { id: number; kind: "success" | "error"; message: string };
-const Ctx = createContext<{ success: (m: string) => void; error: (m: unknown) => void } | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([]);
@@ -15,7 +15,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const success = useCallback((m: string) => push("success", m), [push]);
   const error = useCallback((m: unknown) => push("error", m instanceof Error ? m.message : String(m)), [push]);
   return (
-    <Ctx.Provider value={{ success, error }}>
+    <ToastContext.Provider value={{ success, error }}>
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex flex-col items-center gap-2 px-4 sm:bottom-6 sm:items-end sm:px-6" aria-live="polite">
         {items.map((t) => (
@@ -27,12 +27,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           </div>
         ))}
       </div>
-    </Ctx.Provider>
+    </ToastContext.Provider>
   );
-}
-
-export function useToast() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useToast fora do provider");
-  return ctx;
 }
